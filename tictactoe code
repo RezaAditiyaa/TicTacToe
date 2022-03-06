@@ -1,0 +1,113 @@
+import os
+import random
+
+board = []
+player = "x"
+computer = "o"
+
+
+def reset_board():
+    board.clear()
+    for i in range(9):
+        board.append(" ")
+
+
+def check_for_free_spaces():
+    free_spaces = 0
+    for i in board:
+        if i == " ":
+            free_spaces += 1
+
+    return free_spaces
+
+
+def print_board():
+    os.system("cls")
+
+    if len(board) != 9:
+        reset_board()
+
+    print(f"""
+  {board[0]} | {board[1]} | {board[2]}
+ ---|---|---
+  {board[3]} | {board[4]} | {board[5]}
+ ---|---|---
+  {board[6]} | {board[7]} | {board[8]}
+    """)
+
+
+def player_move():
+    print("**INPUT MAP**")
+    print(f"""
+  1 | 2 | 3
+ ---|---|---
+  4 | 5 | 6
+ ---|---|---
+  7 | 8 | 9
+    """)
+    print("**INPUT MAP**")
+    while True:
+        try:
+            move_to_play = int(
+                input("Please enter a move you wanna play:\n> "))
+        except Exception:
+            continue
+
+        if move_to_play > 9:
+            print("Please only play according to the input map")
+            continue
+        elif board[move_to_play - 1] != " ":
+            print("That place is already taken, enter a free space...")
+            continue
+
+        if board[move_to_play - 1] == " ":
+            board[move_to_play - 1] = player
+            break
+
+
+def computer_move():
+    while True:
+        move_to_play = random.randint(1, 9)
+        if board[move_to_play - 1] != " ":
+            continue
+
+        board[move_to_play - 1] = computer
+        break
+
+
+def check_for_winner():
+    winner = " "
+    for i in range(3):
+        if board[i]*2 == board[i + 1:i+2] or board[i]*2 == board[i + 3::3]:
+            return board[i]
+
+    if board[0] == board[4] and board[0] == board[8]:
+        return board[0]
+    elif board[2] == board[4] and board[2] == board[6]:
+        return board[2]
+
+    return " "
+
+
+def main():
+    reset_board()
+    while True:
+        if check_for_free_spaces() == 0:
+            break
+        elif check_for_winner() != " ":
+            break
+        print_board()
+        player_move()
+        computer_move()
+
+    print_board()
+    if check_for_winner() == "x":
+        game_winner = "Player"
+    elif check_for_winner() == "o":
+        game_winner = "Computer"
+
+    print(f"The winner is: {game_winner}")
+
+
+if __name__ == "__main__":
+    main()
